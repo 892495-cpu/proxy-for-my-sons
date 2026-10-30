@@ -1,0 +1,14 @@
+{
+  "name": "shayans-sons-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node dist/server.mjs",
+    "dev": "node src/server.mjs"
+  }
+}

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <title>Welcome | Shayan's Sons</title>
+  <link rel="preload" as="image" href="/assets/gaming-arena.webp" fetchpriority="high">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #edf4ff;
+      --muted: #9aa8ba;
+      --canvas: #101722;
+      --line: rgba(195, 216, 240, .14);
+      --cyan: #66e4ed;
+      --amber: #ffce76;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      --display: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 50% 25%, rgba(32, 94, 139, .25), transparent 38rem),
+        linear-gradient(rgba(111, 145, 180, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111, 145, 180, .025) 1px, transparent 1px),
+        var(--canvas);
+      background-size: auto, 40px 40px, 40px 40px, auto;
+      font-family: var(--display);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .page { width: min(1120px, 100% - 48px); min-height: 100vh; margin: auto; display: flex; flex-direction: column; }
+    .topbar { height: 82px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px 11px 11px 3px;
+      color: #0e1a26;
+      background: var(--cyan);
+      box-shadow: 0 7px 22px rgba(102, 228, 237, .18);
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .brand-name { font-size: 13px; font-weight: 750; letter-spacing: .04em; }
+    .brand-sub { margin-top: 4px; color: var(--muted); font: 9px var(--mono); letter-spacing: .08em; }
+    .session { display: flex; align-items: center; gap: 8px; color: #c6d5e5; font: 10px var(--mono); }
+    .session-dot { width: 7px; height: 7px; border-radius: 50%; background: #78e1be; box-shadow: 0 0 12px rgba(120, 225, 190, .7); }
+    main { flex: 1; display: grid; align-content: center; padding: 48px 0 60px; }
+    .welcome {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(30px, 6vw, 66px);
+      border: 1px solid rgba(126, 181, 230, .2);
+      border-radius: 24px;
+      background:
+        linear-gradient(100deg, rgba(12, 21, 33, .97) 0%, rgba(12, 21, 33, .88) 48%, rgba(12, 21, 33, .55) 100%),
+        linear-gradient(0deg, rgba(12, 21, 33, .56), transparent 70%),
+        url("/assets/gaming-arena.webp") center 48% / cover,
+        #142a40;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, .28);
+      animation: arrive .55s ease-out both;
+    }
+    .welcome::after { position: absolute; top: -110px; right: -120px; width: 360px; height: 360px; border: 1px solid rgba(102, 228, 237, .13); border-radius: 50%; box-shadow: 0 0 0 36px rgba(102, 228, 237, .025), 0 0 0 72px rgba(102, 228, 237, .02); content: ""; pointer-events: none; }
+    .copy, .destinations { position: relative; z-index: 1; }
+    .eyebrow, .destination-kicker { color: var(--cyan); font: 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+    h1 { max-width: 700px; margin: 18px 0 12px; font-size: clamp(38px, 7vw, 64px); line-height: 1.02; letter-spacing: -.045em; }
+    h1 span { color: var(--cyan); }
+    .intro { max-width: 540px; margin: 0; color: #c1ccda; font-size: 15px; line-height: 1.65; }
+    .destinations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 38px; }
+    .destination {
+      min-height: 142px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      border: 1px solid rgba(195, 216, 240, .2);
+      border-radius: 14px;
+      background: rgba(12, 21, 33, .72);
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .destination:hover { transform: translateY(-3px); border-color: rgba(102, 228, 237, .52); background: rgba(18, 35, 51, .9); box-shadow: 0 16px 34px rgba(0, 0, 0, .2); }
+    .destination-name { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 21px; font-weight: 700; }
+    .destination-name span:last-child { color: var(--cyan); font-size: 19px; transition: transform .2s ease; }
+    .destination:hover .destination-name span:last-child { transform: translate(3px, -3px); }
+    .destination-copy { max-width: 340px; margin: 12px 0 0; color: #aebdcd; font-size: 12px; line-height: 1.55; }
+    .hub .destination-kicker { color: var(--amber); }
+    .hub .destination-name span:last-child { color: var(--amber); }
+    .footer { display: flex; justify-content: space-between; gap: 16px; padding: 17px 0 22px; border-top: 1px solid var(--line); color: var(--muted); font: 9px var(--mono); letter-spacing: .04em; }
+    .sign-out { padding: 0; border: 0; color: #c6d5e5; background: none; font: inherit; text-decoration: underline; text-decoration-color: rgba(198, 213, 229, .35); text-underline-offset: 3px; cursor: pointer; }
+    .sign-out:hover { color: var(--cyan); }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 600px) {
+      .page { width: min(100% - 32px, 480px); }
+      .topbar { height: 70px; }
+      .welcome { padding: 30px 22px 24px; border-radius: 18px; }
+      .welcome::after { top: -170px; right: -205px; }
+      .intro { font-size: 13px; }
+      .destinations { grid-template-columns: 1fr; gap: 10px; margin-top: 28px; }
+      .destination { min-height: 124px; padding: 17px; }
+      .footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Shayan's Sons welcome">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><span class="brand-name">SHAYAN'S SONS</span><span class="brand-sub">YOUR PRIVATE GAME LOUNGE</span></span>
+      </a>
+      <span class="session"><span class="session-dot" aria-hidden="true"></span>SESSION READY</span>
+    </header>
+
+    <main>
+      <section class="welcome" aria-labelledby="welcome-title">
+        <div class="copy">
+          <div class="eyebrow">A little note before you play</div>
+          <h1 id="welcome-title">Welcome, my sons<span> — Shayan.</span></h1>
+          <p class="intro">Your game lounge is ready. Choose where you want to go, and jump straight into your next session.</p>
+        </div>
+        <nav class="destinations" aria-label="Choose your destination">
+          <a class="destination cloudmoon" href="/cloudmoon/">
+            <div class="destination-kicker">Cloud gaming</div>
+            <div>
+              <div class="destination-name">Cloudmoon <span aria-hidden="true">↗</span></div>
+              <p class="destination-copy">Open Cloudmoon and start playing your favorite games.</p>
+            </div>
+          </a>
+          <a class="destination hub" href="/hub">
+            <div class="destination-kicker">Your library</div>
+            <div>
+              <div class="destination-name">Game hub <span aria-hidden="true">→</span></div>
+              <p class="destination-copy">Browse your gaming platforms and pick your next stop.</p>
+            </div>
+          </a>
+        </nav>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>SHAYAN'S SONS <span aria-hidden="true">/</span> MADE FOR GAME NIGHT</span>
+      <button class="sign-out" id="sign-out" type="button">Sign out</button>
+    </footer>
+  </div>
+  <script>
+    document.querySelector('#sign-out').addEventListener('click', async () => {
+      const response = await fetch('/auth/logout', { method: 'POST' });
+      if (!response.ok) throw new Error('Unable to sign out.');
+      window.location.replace('/');
+    });
+  </script>
+</body>
+</html>

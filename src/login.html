@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <title>Sign in | Shayan's Sons</title>
+  <link rel="preload" as="image" href="/assets/gaming-arena.webp" fetchpriority="high">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #edf4ff;
+      --muted: #9aa8ba;
+      --canvas: #101722;
+      --panel: #151f2c;
+      --line: rgba(195, 216, 240, .17);
+      --cyan: #66e4ed;
+      --blue: #4ea5ff;
+      --danger: #ff9a94;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      --display: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: var(--display);
+      -webkit-font-smoothing: antialiased;
+    }
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(10, 17, 26, .94) 0%, rgba(10, 17, 26, .76) 48%, rgba(10, 17, 26, .46) 100%),
+        linear-gradient(0deg, rgba(10, 17, 26, .72), transparent 70%),
+        url("/assets/gaming-arena.webp") center / cover;
+    }
+    .page { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: 0 6vw; }
+    .topbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: #0e1a26;
+      background: var(--cyan);
+      clip-path: polygon(0 0, 100% 0, 100% 72%, 72% 100%, 0 100%);
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .brand-name { font-size: 14px; font-weight: 700; }
+    .brand-sub { margin-top: 4px; color: var(--muted); font: 10px var(--mono); }
+    .top-status { display: flex; align-items: center; gap: 9px; color: #c4d2e0; font: 10px var(--mono); }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #78e1be; box-shadow: 0 0 12px rgba(120, 225, 190, .8); }
+    .main {
+      width: min(1120px, 100%);
+      margin: auto;
+      padding: 54px 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(310px, 410px);
+      align-items: center;
+      gap: clamp(42px, 9vw, 128px);
+    }
+    .intro { max-width: 550px; animation: enter .5s ease-out both; }
+    .eyebrow { color: var(--cyan); font: 10px var(--mono); text-transform: uppercase; }
+    h1 { margin: 18px 0 17px; font-size: 48px; line-height: 1.04; letter-spacing: 0; }
+    .intro p { max-width: 420px; margin: 0; color: #bfccda; font-size: 15px; line-height: 1.6; }
+    .intro-rule { width: 74px; height: 2px; margin-top: 30px; background: var(--cyan); }
+    .login {
+      padding: 29px;
+      border: 1px solid rgba(195, 216, 240, .2);
+      border-radius: 6px;
+      background: rgba(18, 28, 41, .91);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+      animation: enter .5s .08s ease-out both;
+      backdrop-filter: blur(12px);
+    }
+    .login-kicker { color: var(--cyan); font: 10px var(--mono); text-transform: uppercase; }
+    h2 { margin: 8px 0 5px; font-size: 23px; letter-spacing: 0; }
+    .login-copy { margin: 0 0 24px; color: var(--muted); font-size: 12px; }
+    .field { display: grid; gap: 7px; margin-top: 16px; }
+    label { color: #cfdae6; font-size: 11px; font-weight: 600; }
+    input {
+      width: 100%;
+      height: 44px;
+      padding: 0 12px;
+      border: 1px solid rgba(195, 216, 240, .2);
+      border-radius: 4px;
+      outline: 0;
+      color: var(--ink);
+      background: #101a26;
+      font: 13px var(--display);
+    }
+    input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(102, 228, 237, .12); }
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 68px; }
+    .reveal {
+      position: absolute;
+      top: 50%;
+      right: 9px;
+      transform: translateY(-50%);
+      padding: 5px 7px;
+      border: 0;
+      color: #a9c2d9;
+      background: transparent;
+      font: 10px var(--mono);
+      cursor: pointer;
+    }
+    .error { min-height: 18px; margin: 11px 0 0; color: var(--danger); font-size: 11px; }
+    .submit {
+      width: 100%;
+      height: 44px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid rgba(102, 228, 237, .45);
+      border-radius: 4px;
+      color: #0d1b28;
+      background: var(--cyan);
+      font: 700 12px var(--display);
+      cursor: pointer;
+      transition: background .18s ease, transform .18s ease;
+    }
+    .submit:hover { transform: translateY(-1px); background: #8af3f3; }
+    .submit:disabled { cursor: wait; opacity: .7; }
+    .fine-print { margin: 16px 0 0; color: #8494a7; font: 10px var(--mono); line-height: 1.6; }
+    .foot {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      color: #92a0b1;
+      font: 10px var(--mono);
+    }
+    .foot span:last-child { color: #bdc9d6; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    @keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 760px) {
+      .page { padding: 0 22px; }
+      .main { max-width: 460px; grid-template-columns: 1fr; gap: 28px; padding: 40px 0; }
+      .intro { max-width: 420px; }
+      h1 { margin: 12px 0; font-size: 36px; }
+      .intro p { font-size: 13px; }
+      .intro-rule { margin-top: 18px; }
+      .login { padding: 23px; }
+      .foot { align-items: flex-start; flex-direction: column; justify-content: center; padding: 12px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Shayan's Sons home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><span class="brand-name">SHAYAN'S SONS</span><span class="brand-sub">GAME HUB / 01</span></span>
+      </a>
+      <span class="top-status"><span class="live-dot" aria-hidden="true"></span>GATEWAY READY</span>
+    </header>
+
+    <main class="main">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="eyebrow">Your games, one launch away</div>
+        <h1 id="page-title">Make room<br>for play.</h1>
+        <p>Sign in to open your private game hub and choose where your next session begins.</p>
+        <div class="intro-rule" aria-hidden="true"></div>
+      </section>
+
+      <section class="login" aria-labelledby="login-title">
+        <div class="login-kicker">Private access</div>
+        <h2 id="login-title">Welcome back</h2>
+        <p class="login-copy">Sign in to continue to your game hub.</p>
+        <form id="login-form">
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="password-wrap">
+              <input id="password" name="password" type="password" autocomplete="current-password" required>
+              <button class="reveal" id="reveal" type="button" aria-pressed="false">Show</button>
+            </div>
+          </div>
+          <p class="error" id="error" role="alert" aria-live="polite"></p>
+          <button class="submit" id="submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="fine-print">Your session is private to this browser and expires automatically.</p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>SHAYAN'S SONS PROXY <span aria-hidden="true">/</span> FIXED CLOUDMOON ORIGIN</span>
+      <span>Credentials are shared with repository collaborators.</span>
+    </footer>
+  </div>
+  <script>
+    const form = document.querySelector('#login-form');
+    const error = document.querySelector('#error');
+    const submit = document.querySelector('#submit');
+    const password = document.querySelector('#password');
+    const reveal = document.querySelector('#reveal');
+
+    reveal.addEventListener('click', () => {
+      const showing = password.type === 'password';
+      password.type = showing ? 'text' : 'password';
+      reveal.textContent = showing ? 'Hide' : 'Show';
+      reveal.setAttribute('aria-pressed', String(showing));
+      password.focus();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      error.textContent = '';
+      submit.disabled = true;
+      submit.textContent = 'Signing in…';
+      try {
+        const response = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form)),
+        });
+        if (!response.ok) {
+          const result = await response.json();
+          error.textContent = result.error || 'Unable to sign in. Try again.';
+          return;
+        }
+        window.location.replace('/');
+      } catch {
+        error.textContent = 'The server could not be reached. Check the connection and try again.';
+      } finally {
+        submit.disabled = false;
+        submit.innerHTML = 'Sign in <span aria-hidden="true">→</span>';
+      }
+    });
+  </script>
+</body>
+</html>

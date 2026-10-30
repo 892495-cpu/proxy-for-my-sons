@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <title>Shayan's Sons | Game Hub</title>
+  <link rel="preload" as="image" href="/assets/gaming-arena.webp" fetchpriority="high">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #edf4ff;
+      --muted: #9aa8ba;
+      --canvas: #101722;
+      --panel: #182332;
+      --panel-light: #202f40;
+      --line: rgba(195, 216, 240, .13);
+      --blue: #4ea5ff;
+      --cyan: #66e4ed;
+      --mint: #78e1be;
+      --amber: #ffce76;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      --display: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(111, 145, 180, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111, 145, 180, .035) 1px, transparent 1px),
+        radial-gradient(ellipse at 9% 0%, rgba(35, 100, 162, .24), transparent 36rem),
+        radial-gradient(ellipse at 90% 58%, rgba(21, 65, 98, .16), transparent 34rem),
+        var(--canvas);
+      background-size: 40px 40px, 40px 40px, auto, auto, auto;
+      font-family: var(--display);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    .shell { max-width: 1280px; margin: auto; padding: 0 42px 48px; }
+    .topbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; transition: opacity .18s ease; }
+    .brand:hover { opacity: .82; }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: #0e1a26;
+      background: var(--cyan);
+      border-radius: 10px 10px 10px 3px;
+      box-shadow: 0 7px 22px rgba(102, 228, 237, .18);
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .brand-name { font-size: 14px; font-weight: 700; line-height: 1.15; }
+    .brand-sub { margin-top: 4px; color: var(--muted); font: 10px var(--mono); }
+    .topbar-right { display: flex; align-items: center; gap: 24px; }
+    .clock { color: var(--muted); font: 11px var(--mono); }
+    .secure-pill, .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #c6d5e5;
+      font: 10px var(--mono);
+      letter-spacing: 0;
+    }
+    .secure-pill { padding: 8px 11px; }
+    .sign-out {
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: #c6d5e5;
+      background: transparent;
+      font: 10px var(--mono);
+      cursor: pointer;
+    }
+    .sign-out:hover { border-color: var(--cyan); color: var(--ink); }
+    .lock { color: var(--mint); font-size: 12px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 270px;
+      margin-top: 36px;
+      padding: 40px 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border: 1px solid rgba(126, 181, 230, .22);
+      border-radius: 16px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .18);
+      background:
+        linear-gradient(90deg, rgba(12, 21, 33, .96) 0%, rgba(12, 21, 33, .78) 45%, rgba(12, 21, 33, .1) 100%),
+        linear-gradient(0deg, rgba(12, 21, 33, .65), transparent 58%),
+        url("/assets/gaming-arena.webp") center 48% / cover,
+        #142a40;
+      animation: arrive .55s ease-out both;
+    }
+    .hero-copy { position: relative; z-index: 1; max-width: 620px; }
+    .eyebrow { color: var(--cyan); font: 10px var(--mono); text-transform: uppercase; }
+    h1 { margin: 13px 0 10px; font-size: 44px; line-height: 1.05; letter-spacing: 0; }
+    .hero-copy p { margin: 0; color: #c1ccda; font-size: 14px; }
+    .hero-meta { position: relative; z-index: 1; display: flex; gap: 8px; align-items: center; margin-bottom: 2px; }
+    .status-pill { padding: 10px 13px; background: rgba(12, 21, 33, .66); backdrop-filter: blur(8px); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px rgba(120, 225, 190, .8); }
+    .status-dot.offline { background: var(--amber); box-shadow: 0 0 12px rgba(255, 206, 118, .7); }
+    #proxy-dot:not(.offline), #cloudmoon-dot:not(.offline) { animation: pulse 2.4s ease-in-out infinite; }
+
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 40px 0 18px; }
+    .section-kicker { color: var(--muted); font: 10px var(--mono); text-transform: uppercase; }
+    h2 { margin: 7px 0 0; font-size: 22px; letter-spacing: 0; }
+    .library-count { color: var(--muted); font: 11px var(--mono); }
+    .library-count strong { color: var(--cyan); font-weight: 500; }
+
+    .platform-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .platform {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background-color: var(--panel);
+      background-position: center;
+      background-size: cover;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .16);
+      transition: border-color .22s ease, transform .22s ease, box-shadow .22s ease;
+      animation: arrive .55s ease-out both;
+    }
+    .platform:nth-child(2) { animation-delay: .1s; }
+    .platform::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12, 21, 33, .25) 0%, rgba(12, 21, 33, .35) 30%, #121c29 78%);
+      content: "";
+    }
+    .platform:hover {
+      transform: translateY(-4px);
+      border-color: rgba(102, 228, 237, .58);
+      box-shadow: 0 24px 54px rgba(0, 0, 0, .25);
+    }
+    .cloudmoon {
+      background-image: url("/assets/cloudmoon.webp");
+    }
+    .boosteroid {
+      background-image: url("/assets/boosteroid.webp");
+    }
+    .platform-top, .platform-bottom { position: relative; z-index: 1; }
+    .service-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .service-type { color: #d3deeb; font: 10px var(--mono); text-transform: uppercase; }
+    .service-state { display: flex; align-items: center; gap: 7px; color: #d0deea; font: 10px var(--mono); }
+    .service-state .status-dot { width: 6px; height: 6px; }
+    .service-logo { margin: 31px 0 6px; font-size: 31px; font-weight: 700; }
+    .service-logo span { color: var(--cyan); }
+    .boosteroid .service-logo span { color: var(--amber); }
+    .platform-bottom { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+    .platform-bottom p { max-width: 280px; margin: 0; color: #b7c5d5; font-size: 12px; line-height: 1.55; }
+    .launch {
+      flex: 0 0 auto;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 15px;
+      border: 1px solid rgba(102, 228, 237, .42);
+      border-radius: 4px;
+      color: #0d1b28;
+      background: var(--cyan);
+      font: 600 12px var(--display);
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(102, 228, 237, .12);
+      transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .launch:hover { transform: translateY(-2px); background: #8af3f3; box-shadow: 0 11px 26px rgba(102, 228, 237, .2); }
+    .boosteroid .launch { border-color: rgba(255, 206, 118, .38); background: var(--amber); }
+    .boosteroid .launch:hover { background: #ffdb9c; }
+    .arrow { font-size: 16px; line-height: 1; }
+
+    .bottom-bar { margin-top: 22px; padding-top: 15px; display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); color: var(--muted); font: 10px var(--mono); }
+    .bottom-bar a { color: #c6d5e5; text-decoration-color: rgba(198, 213, 229, .35); text-underline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 50% { opacity: .58; } }
+    @media (max-width: 720px) {
+      .shell { padding: 0 18px 28px; }
+      .topbar { height: 70px; }
+      .topbar-right { gap: 10px; }
+      .clock { display: none; }
+      h1 { font-size: 34px; }
+      .hero { min-height: 260px; margin-top: 20px; padding: 26px 22px; align-items: flex-start; flex-direction: column; border-radius: 13px; }
+      .hero-meta { margin-top: 20px; }
+      .platform-grid { grid-template-columns: 1fr; }
+      .platform { min-height: 275px; padding: 19px; border-radius: 12px; }
+      .section-heading { margin-top: 28px; }
+    }
+    @media (max-width: 420px) {
+      .secure-pill { padding: 7px 9px; font-size: 9px; }
+      .platform-bottom { align-items: flex-start; flex-direction: column; }
+      .launch { min-height: 40px; }
+      .bottom-bar { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/hub" aria-label="Shayan's Sons Game Hub home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><span class="brand-name">SHAYAN'S SONS</span><span class="brand-sub">GAME HUB / 01</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="clock" id="clock">--:--:--</span>
+        <span class="secure-pill"><span class="lock" aria-hidden="true">◆</span> PRIVATE SESSION</span>
+        <button class="sign-out" id="sign-out" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <div class="eyebrow">Welcome, my sons — Shayan</div>
+        <h1 id="page-title">Your next session<br>starts here.</h1>
+        <p>Shayan's game lounge is ready. Choose where the fun begins.</p>
+      </div>
+      <div class="hero-meta">
+        <span class="status-pill"><span class="status-dot" id="proxy-dot"></span><span id="proxy-status">Checking proxy</span></span>
+      </div>
+    </section>
+
+    <section aria-labelledby="platforms-title">
+      <div class="section-heading">
+        <div><div class="section-kicker">Your library</div><h2 id="platforms-title">Choose a platform</h2></div>
+        <div class="library-count"><strong>02</strong> DESTINATIONS</div>
+      </div>
+
+      <div class="platform-grid">
+        <article class="platform cloudmoon">
+          <div class="platform-top">
+            <div class="service-label"><span class="service-type">Cloud gaming / proxied</span><span class="service-state"><span class="status-dot" id="cloudmoon-dot"></span><span id="cloudmoon-state">Checking</span></span></div>
+            <div class="service-logo">cloud<span>moon</span></div>
+          </div>
+          <div class="platform-bottom">
+            <p>Launch your Cloudmoon session through the protected connection.</p>
+            <a class="launch" href="/cloudmoon/" id="cloudmoon-launch">Launch Cloudmoon <span class="arrow" aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="platform boosteroid">
+          <div class="platform-top">
+            <div class="service-label"><span class="service-type">Cloud gaming / official site</span><span class="service-state"><span class="status-dot" style="background: var(--amber); box-shadow: 0 0 12px rgba(255,206,118,.55)"></span>DIRECT</span></div>
+            <div class="service-logo">BOOST<span>EROID</span></div>
+          </div>
+          <div class="platform-bottom">
+            <p>Open Boosteroid on its official website. Sign in with your provider account.</p>
+            <a class="launch" href="https://boosteroid.com/" target="_blank" rel="noopener noreferrer" id="boosteroid-launch">Visit Boosteroid <span class="arrow" aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="bottom-bar">
+      <span>SHAYAN'S SONS PROXY <span aria-hidden="true">/</span> FIXED CLOUDMOON ORIGIN</span>
+      <span>NEED THE APP? <a href="/cloudmoon/">OPEN CLOUDMOON</a></span>
+    </footer>
+  </main>
+  <script>
+    const clock = document.querySelector('#clock');
+    const proxyStatus = document.querySelector('#proxy-status');
+    const proxyDot = document.querySelector('#proxy-dot');
+    const cloudmoonState = document.querySelector('#cloudmoon-state');
+    const cloudmoonDot = document.querySelector('#cloudmoon-dot');
+    const updateClock = () => {
+      clock.textContent = new Intl.DateTimeFormat(undefined, {
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+      }).format(new Date());
+    };
+    const checkProxy = async () => {
+      try {
+        const response = await fetch('/healthz', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Proxy offline');
+        proxyStatus.textContent = 'Proxy online';
+        cloudmoonState.textContent = 'Gateway ready';
+        proxyDot.classList.remove('offline');
+        cloudmoonDot.classList.remove('offline');
+      } catch {
+        proxyStatus.textContent = 'Proxy unavailable';
+        cloudmoonState.textContent = 'Unavailable';
+        proxyDot.classList.add('offline');
+        cloudmoonDot.classList.add('offline');
+      }
+    };
+    updateClock();
+    checkProxy();
+    window.setInterval(updateClock, 1000);
+    window.setInterval(checkProxy, 15000);
+    document.querySelector('#sign-out').addEventListener('click', async () => {
+      await fetch('/auth/logout', { method: 'POST' });
+      window.location.replace('/');
+    });
+  </script>
+</body>
+</html>
